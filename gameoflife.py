@@ -2,40 +2,49 @@ import random as rn
 import time
 
 
-size = 40 # grid size
-delay = 0.1 # seconds
-iter = 0
+height = 40     # horizontal lenght
+width = 75      # vertical lenght
+delay = 0.1     # time between iterations in seconds
+iter = 0        # iteration counter
+random = True   # for randomized grid
+glider = False  # to add a glider to empty grid
 
-#grid = [ [rn.randint(0, 1) for _ in range(size)] for _ in range(size)] # for randomized grid
-grid = [[0] * size for _ in range(size)] # for empty grid
+if random:
+    grid = [[rn.randint(0, 1) for _ in range(width)] for _ in range(height)]  # for randomized grid
 
-grid[2][2] = 1; grid[3][3] = 1; grid[4][2] = 1; grid[4][3] = 1; grid[4][1] = 1; # for glider
+elif glider:
+    grid = [[0] * width for _ in range(height)]  # for empty grid
+    grid[7][2] = 1
+    grid[8][3] = 1
+    grid[9][2] = 1
+    grid[9][3] = 1
+    grid[9][1] = 1  # for glider
 
 
-next_grid = [[0] * size for _ in range(size)]
-
-for block in grid:
-    line = ""
-    for cell in block:
-        line += f"{cell}  "
-    line = line.replace('0', '.')
-    line = line.replace("1", "#")
-    print(line)
-print(f"iteration 0\n---------------------------------")
+next_grid = [[0] * width for _ in range(height)]
 
 def print_grid():
     global next_grid
-    for block in next_grid:
+    final = ""
+    for block in grid:
         line = ""
         for cell in block:
             line += f"{cell}  "
         line = line.replace('0', '.')
         line = line.replace("1", "#")
-        print(line)
+        final += line
+        final += "\n"
+    print(final)
+
+
+
+print_grid()
+print(f"iteration 0\n---------------------------------")
+
 
 def alivecheck(num, alive):
     if alive:
-        if num in [2,3]:
+        if num in [2, 3]:
             return 1
         return 0
     else:
@@ -55,32 +64,31 @@ def statecheck(a, b):
     else:
         alivestatus = False
 
-
-    if (a,b) in [(0, 0), (0, size-1), (size-1, 0), (size-1, size-1)]:
+    if (a, b) in [(0, 0), (0, width-1), (height-1, 0), (height-1, width-1)]:
         corner = True
-    elif (a in [0, size-1]) or (b in [0, size-1]):
+    elif (a in [0, height-1]) or (b in [0, width-1]):
         side = True
 
     if corner:
         #print("corner detected")
 
-        if (a,b) == (0, 0): # top left
-            for cell in [grid[0][1], grid[1][1], grid[1][0], grid[size-1][size-1], grid[size-1][0], grid[0][size-1], grid[1][size-1], grid[size-1][1]]:
+        if (a, b) == (0, 0):  # top left
+            for cell in [grid[0][1], grid[1][1], grid[1][0], grid[height-1][width-1], grid[height-1][0], grid[0][width-1], grid[1][width-1], grid[height-1][1]]:
                 if cell == 1:
                     alive_n += 1
 
-        elif (a,b) == (size-1, 0): # bottom left
-            for cell in [grid[size-2][0], grid[size-2][1], grid[size-1][1], grid[0][0], grid[size-1][size-1], grid[0][size-1], grid[size-2][size-1], grid[0][1]]:
+        elif (a, b) == (height-1, 0):  # bottom left
+            for cell in [grid[height-2][0], grid[height-2][1], grid[height-1][1], grid[0][0], grid[height-1][width-1], grid[0][width-1], grid[height-2][width-1], grid[0][1]]:
                 if cell == 1:
                     alive_n += 1
 
-        elif (a,b) == (0, size-1): # top right
-            for cell in [grid[0][size-2], grid[1][size-2], grid[1][size-1], grid[0][0], grid[size-1][size-1], grid[size-1][0], grid[1][0], grid[size-1][size-2]]:
+        elif (a, b) == (0, width-1):  # top right
+            for cell in [grid[0][width-2], grid[1][width-2], grid[1][width-1], grid[0][0], grid[height-1][width-1], grid[height-1][0], grid[1][0], grid[height-1][width-2]]:
                 if cell == 1:
                     alive_n += 1
 
-        elif (a,b) == (size-1, size-1): # bottom right
-            for cell in [grid[size-2][size-1], grid[size-1][size-2], grid[size-2][size-2], grid[0][0], grid[size-1][0], grid[0][size-1], grid[size-2][0], grid[0][size-2]]:
+        elif (a, b) == (height-1, width-1):  # bottom right
+            for cell in [grid[height-2][width-1], grid[height-1][width-2], grid[height-2][width-2], grid[0][0], grid[height-1][0], grid[0][width-1], grid[height-2][0], grid[0][width-2]]:
                 if cell == 1:
                     alive_n += 1
         else:
@@ -91,31 +99,28 @@ def statecheck(a, b):
     elif side:
         #print("side detected")
 
-        if a == 0: # top side
-            for cell in [grid[0][b+1], grid[0][b-1], grid[1][b], grid[1][b+1], grid[1][b-1], grid[size-1][b], grid[size-1][b+1], grid[size-1][b-1]]:
+        if a == 0:  # top side
+            for cell in [grid[0][b+1], grid[0][b-1], grid[1][b], grid[1][b+1], grid[1][b-1], grid[height-1][b], grid[height-1][b+1], grid[height-1][b-1]]:
                 if cell == 1:
                     alive_n += 1
 
-
-        elif b == 0: # left side
-            for cell in [grid[a+1][0], grid[a-1][0], grid[a][1], grid[a+1][1], grid[a-1][1], grid[a][size-1], grid[a+1][size-1], grid[a-1][size-1]]:
+        elif b == 0:  # left side
+            for cell in [grid[a+1][0], grid[a-1][0], grid[a][1], grid[a+1][1], grid[a-1][1], grid[a][width-1], grid[a+1][width-1], grid[a-1][width-1]]:
                 if cell == 1:
                     alive_n += 1
 
-
-        elif a == size-1: # bottom side
+        elif a == height-1:  # bottom side
             for cell in [grid[a][b-1], grid[a][b+1], grid[a-1][b], grid[a-1][b+1], grid[a-1][b-1], grid[0][b], grid[0][b+1], grid[0][b-1]]:
                 if cell == 1:
                     alive_n += 1
 
-
-        elif b == size-1: # right side
+        elif b == width-1:  # right side
             for cell in [grid[a+1][b], grid[a-1][b], grid[a][b-1], grid[a+1][b-1], grid[a-1][b-1], grid[a][0], grid[a+1][0], grid[a-1][0]]:
                 if cell == 1:
-                    alive_n += 1    
+                    alive_n += 1
         else:
             print("critical error in side check")
-        
+
         return alivecheck(alive_n, alivestatus)
     else:
 
@@ -124,7 +129,6 @@ def statecheck(a, b):
                 alive_n += 1
 
     return alivecheck(alive_n, alivestatus)
-
 
 
 while True:
@@ -139,7 +143,8 @@ while True:
     print_grid()
 
     grid = next_grid
-    next_grid = [[0] * size for _ in range(size)]
+
+    next_grid = [[0] * width for _ in range(height)]
     iter += 1
     print(f"iteration {iter}\n---------------------------------")
     time.sleep(delay)
