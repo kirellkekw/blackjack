@@ -2,12 +2,11 @@ import random as rn
 import time
 
 
-height = 40     # horizontal lenght
-width = 75      # vertical lenght
+height = 20     # horizontal lenght
+width = 20      # vertical lenght
 delay = 0.1     # time between iterations in seconds
-iter = 0        # iteration counter
-random = True   # for randomized grid
-glider = False  # to add a glider to empty grid
+random = False  # for randomized grid, cannot work with glider
+glider = True   # to add a glider to empty grid, cannot work with random
 
 if random:
     grid = [[rn.randint(0, 1) for _ in range(width)] for _ in range(height)]  # for randomized grid
@@ -20,6 +19,7 @@ elif glider:
     grid[9][3] = 1
     grid[9][1] = 1  # for glider
 
+iter = 0        # iteration counter
 
 next_grid = [[0] * width for _ in range(height)]
 
