@@ -1,9 +1,21 @@
 from random import randint
 
+from colorama import Fore , Back , Style
+
+from os import name, system
+
+def clear():
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
+
+
 # configurable variables
-WIDTH = 50
-HEIGHT = 30
-mine = 40
+WIDTH = 20
+HEIGHT = 20
+mine = 10
+
 
 #other variables
 CELLCOUNT = WIDTH * HEIGHT
@@ -17,7 +29,8 @@ visible_grid = [[9 for _ in range(WIDTH)] for _ in range(HEIGHT)] # 9 for non re
 
 def print_grid(grid): #prints grid
     global WIDTH, HEIGHT
-    #final = "|"
+    clear()
+
     final = "  "
     for _ in range(WIDTH):
         final += f"{_%10}  "
@@ -33,8 +46,39 @@ def print_grid(grid): #prints grid
         line = line.replace("9", "#")
         final += str(line)
         final += "|\n"
-    final += "_" * ((WIDTH * 3 ) + 1)
-    print(final)
+    final += " |"
+    final += "_" * (WIDTH * 3 )+"|"
+    for cell in final:
+        if cell == "1":
+            print(Fore.LIGHTBLUE_EX + cell, end= "")
+        elif cell == "2":
+            print(Fore.GREEN + cell, end= "")
+        elif cell == "3":
+            print(Fore.RED + cell, end= "")
+        elif cell == "4":
+            print(Fore.BLUE+ cell, end= "")
+        elif cell == "5":
+            print(Fore.MAGENTA + cell, end= "")
+        elif cell == "6":
+            print(Fore.CYAN + cell, end= "")
+        elif cell == "7":
+            print(Fore.WHITE + cell, end= "")
+        elif cell == "8":
+            print(Fore.LIGHTCYAN_EX + cell, end= "")
+        elif cell == "#":
+            print(Fore.WHITE+ cell, end= "")
+        elif cell == ".":
+            print(Fore.YELLOW+ cell, end= "")
+        elif cell == "|":
+            print(Fore.LIGHTRED_EX+ cell, end= "")
+        elif cell == "_":
+            print(Fore.LIGHTRED_EX+ cell, end= "")
+        elif cell == "x":
+            print(Fore.LIGHTMAGENTA_EX+ cell, end= "")    
+        else:
+            print(Fore.RESET + cell,end="")
+    print(Fore.RESET+"\n")
+    #print(final)
 
 def exception_check(a, b): # returns 1 for corner, 2 for side, 0 for default
     global WIDTH, HEIGHT
@@ -264,7 +308,13 @@ def cell_check(a, b): # event of checking a cell
     #print(f"cell check on {a}, {b}")
     if GRID[a][b] == "X": # game ends
         game_over = True
-        visible_grid[a][b] = "*"
+    
+        for a in range(0,HEIGHT):
+            for b in range(0,WIDTH):
+                if GRID[a][b] == "X":
+                    visible_grid[a][b] = "x" # "💣"
+    
+    
     else:                 # main game sequence
         mine_n = neighbor_check(a, b)
         
