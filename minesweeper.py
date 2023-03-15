@@ -1,6 +1,6 @@
 from random import randint
 
-from colorama import Fore , Back , Style
+from colorama import Fore
 
 from os import name, system
 
@@ -349,7 +349,7 @@ while not game_over:
         break
 if game_win:
     print_grid(visible_grid)
-    print("You won!")
+    print(Fore.GREEN + "You won!")
 else:
     print_grid(visible_grid)
-    print("You lost!")
+    print(Fore.RED + "You lost!")
