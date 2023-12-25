@@ -12,9 +12,9 @@ def clear():
 
 
 # configurable variables
-WIDTH = 20
-HEIGHT = 20
-mine = 10
+WIDTH = 30
+HEIGHT = 16
+mine = 99
 
 
 #other variables
@@ -27,7 +27,7 @@ game_win = False
 GRID = [["X" for _ in range(WIDTH)] for _ in range(HEIGHT)]       # X is for mines, 0 is for empty cells
 visible_grid = [[9 for _ in range(WIDTH)] for _ in range(HEIGHT)] # 9 for non revealed, 0 for empty neighbors
 
-def print_grid(grid): #prints grid
+def printGrid(grid): #prints grid
     global WIDTH, HEIGHT
     clear()
 
@@ -74,13 +74,13 @@ def print_grid(grid): #prints grid
         elif cell == "_":
             print(Fore.LIGHTRED_EX+ cell, end= "")
         elif cell == "x":
-            print(Fore.LIGHTMAGENTA_EX+ cell, end= "")    
+            print(Fore.LIGHTMAGENTA_EX+ "X", end= "")    
         else:
             print(Fore.RESET + cell,end="")
     print(Fore.RESET+"\n")
     #print(final)
 
-def exception_check(a, b): # returns 1 for corner, 2 for side, 0 for default
+def exceptionCheck(a, b): # returns 1 for corner, 2 for side, 0 for default
     global WIDTH, HEIGHT
     #print(f"exception check on {a}, {b}")
     if (a, b) in [(0, 0), (0, WIDTH-1), (HEIGHT-1, 0), (HEIGHT-1, WIDTH-1)]:
@@ -91,7 +91,7 @@ def exception_check(a, b): # returns 1 for corner, 2 for side, 0 for default
 
     return 0
 
-def board_init(): #initializes game board from zero
+def boardInit(): #initializes game board from zero
     global minecount, GRID
     #print("board init")
     while minecount != mine:
@@ -102,10 +102,10 @@ def board_init(): #initializes game board from zero
             GRID[randomheight][randomWIDTH] = "0"
             minecount -= 1
 
-def neighbor_check(a, b): # returns neighbor mine count of given cell
+def neighborCheck(a, b): # returns neighbor mine count of given cell
     global GRID
     mine_n = 0
-    exception = exception_check(a, b)
+    exception = exceptionCheck(a, b)
     #print(f"neighbor check on {a}, {b}, exception {exception}")
     if exception == 1: # corner
 
@@ -159,83 +159,83 @@ def neighbor_check(a, b): # returns neighbor mine count of given cell
                 mine_n += 1
     return mine_n
 
-def revealcell(a, b): # reveals given cell only
+def revealCell(a, b): # reveals given cell only
     global visible_grid
     #print(f"reveal cell on {a}, {b}")
-    exception_code = exception_check(a, b)
-    visible_grid[a][b] = neighbor_check(a, b)
+    exception_code = exceptionCheck(a, b)
+    visible_grid[a][b] = neighborCheck(a, b)
 
-def revealcellneighbors(a, b): # reveals all neighbors of given cell
+def revealCellNeighbors(a, b): # reveals all neighbors of given cell
     global visible_grid, WIDTH, HEIGHT
 
-    exception = exception_check(a, b)
+    exception = exceptionCheck(a, b)
     #print(f"revealcellneighbors on {a}, {b}, exception {exception}")
     if exception == 1: # corner
 
         if (a, b) == (0, 0):  # top left
-            revealcell(0, 1)
-            revealcell(1, 1)
-            revealcell(1, 0)
+            revealCell(0, 1)
+            revealCell(1, 1)
+            revealCell(1, 0)
         elif (a, b) == (HEIGHT-1, 0):  # bottom left
-            revealcell(HEIGHT-2, 0)
-            revealcell(HEIGHT-1, 1)
-            revealcell(HEIGHT-1, 1)
+            revealCell(HEIGHT-2, 0)
+            revealCell(HEIGHT-1, 1)
+            revealCell(HEIGHT-1, 1)
         elif (a, b) == (0, WIDTH-1):  # top right
-            revealcell(0, WIDTH-2)
-            revealcell(1, WIDTH-2)
-            revealcell(1, WIDTH-1)
+            revealCell(0, WIDTH-2)
+            revealCell(1, WIDTH-2)
+            revealCell(1, WIDTH-1)
         elif (a, b) == (HEIGHT-1, WIDTH-1):  # bottom right
-            revealcell(HEIGHT-2, WIDTH-1)
-            revealcell(HEIGHT-2, WIDTH-2)
-            revealcell(HEIGHT-1, WIDTH-2)
+            revealCell(HEIGHT-2, WIDTH-1)
+            revealCell(HEIGHT-2, WIDTH-2)
+            revealCell(HEIGHT-1, WIDTH-2)
         else:
             print("critical error in corner check")
 
     elif exception == 2: # side
 
         if a == 0:  # top side
-            revealcell(0, b+1)
-            revealcell(0, b-1)
-            revealcell(1, b)
-            revealcell(1, b+1)
-            revealcell(1, b-1)
+            revealCell(0, b+1)
+            revealCell(0, b-1)
+            revealCell(1, b)
+            revealCell(1, b+1)
+            revealCell(1, b-1)
 
         elif b == 0:  # left side
-            revealcell(a+1, 0)
-            revealcell(a-1, 0)
-            revealcell(a, 1)
-            revealcell(a+1, 1)
-            revealcell(a-1, 1)
+            revealCell(a+1, 0)
+            revealCell(a-1, 0)
+            revealCell(a, 1)
+            revealCell(a+1, 1)
+            revealCell(a-1, 1)
 
         elif a == HEIGHT-1:  # bottom side
-            revealcell(a, b-1)
-            revealcell(a, b+1)
-            revealcell(a-1, b)
-            revealcell(a-1, b+1)
-            revealcell(a-1, b-1)
+            revealCell(a, b-1)
+            revealCell(a, b+1)
+            revealCell(a-1, b)
+            revealCell(a-1, b+1)
+            revealCell(a-1, b-1)
 
         elif b == WIDTH-1:  # right side
-            revealcell(a+1, b)
-            revealcell(a-1, b)
-            revealcell(a, b-1)
-            revealcell(a+1, b-1)
-            revealcell(a-1, b-1)
+            revealCell(a+1, b)
+            revealCell(a-1, b)
+            revealCell(a, b-1)
+            revealCell(a+1, b-1)
+            revealCell(a-1, b-1)
         else:
             print("critical error in side check")
    
     else:
-            revealcell(a-1, b-1)
-            revealcell(a-1, b)
-            revealcell(a-1, b+1)
-            revealcell(a, b-1)
-            revealcell(a, b+1)
-            revealcell(a+1, b-1)
-            revealcell(a+1, b)
-            revealcell(a+1, b+1)
+            revealCell(a-1, b-1)
+            revealCell(a-1, b)
+            revealCell(a-1, b+1)
+            revealCell(a, b-1)
+            revealCell(a, b+1)
+            revealCell(a+1, b-1)
+            revealCell(a+1, b)
+            revealCell(a+1, b+1)
 
-def revealedneighborcheck(a, b): # checks if all neighbors of given cell are revealed, returns bool
+def revealedNeighborCheck(a, b): # checks if all neighbors of given cell are revealed, returns bool
     global visible_grid, WIDTH, HEIGHT
-    exception = exception_check(a, b)
+    exception = exceptionCheck(a, b)
     
     if exception == 1: # corner
 
@@ -294,16 +294,16 @@ def revealedneighborcheck(a, b): # checks if all neighbors of given cell are rev
     
     return True
                 
-def checkmapforsafezone(): # checks visible map for 0's recursively
+def checkMapForSafezone(): # checks visible map for 0's recursively
     global visible_grid, GRID, WIDTH, HEIGHT
     temp_grid = visible_grid # to check if a change happened in grid
 
     for a in range(0, HEIGHT-1):
         for b in range(0,WIDTH-1):
-            if visible_grid[a][b] == 0 and not revealedneighborcheck(a, b): # must be tweaked to avoid infinite recursion and exception handling
-                revealcellneighbors(a, b)
+            if visible_grid[a][b] == 0 and not revealedNeighborCheck(a, b): # must be tweaked to avoid infinite recursion and exception handling
+                revealCellNeighbors(a, b)
 
-def cell_check(a, b): # event of checking a cell
+def cellCheck(a, b): # event of checking a cell
     global GRID, visible_grid, game_over
     #print(f"cell check on {a}, {b}")
     if GRID[a][b] == "X": # game ends
@@ -316,14 +316,14 @@ def cell_check(a, b): # event of checking a cell
     
     
     else:                 # main game sequence
-        mine_n = neighbor_check(a, b)
+        mine_n = neighborCheck(a, b)
         
         visible_grid[a][b] = mine_n # reveals cell in visible grid
         
         if mine_n == 0: # if selected cell doesnt have any mine neighbors
-            revealcellneighbors(a, b)
+            revealCellNeighbors(a, b)
 
-def gamecheck(): # checks if game is complete, returns true if complete  
+def gameCheck(): # checks if game is complete, returns true if complete  
     global GRID, visible_grid, WIDTH, HEIGHT
     #print(f"game check")
     for a in range(HEIGHT):
@@ -334,22 +334,22 @@ def gamecheck(): # checks if game is complete, returns true if complete
 
 
 
-board_init() # prepares game board
+boardInit() # prepares game board
 
 while not game_over:
-    print_grid(visible_grid)
+    printGrid(visible_grid)
     x = int(input("Please enter x coordinate to check: "))
     y = int(input("Please enter y coordinate to check: "))
-    cell_check(y, x)
+    cellCheck(y, x)
     for _ in range(WIDTH):
-        checkmapforsafezone()
-    if gamecheck(): # if all empty cells are opened
+        checkMapForSafezone()
+    if gameCheck(): # if all empty cells are opened
         game_over = True
         game_win = True
         break
 if game_win:
-    print_grid(visible_grid)
+    printGrid(visible_grid)
     print(Fore.GREEN + "You won!")
 else:
-    print_grid(visible_grid)
+    printGrid(visible_grid)
     print(Fore.RED + "You lost!")
